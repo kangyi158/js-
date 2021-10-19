@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="res"></div>
+</body>
+<script>
+    // instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上。
+    // 语法：
+    // object instanceof constructor
+    // object：某个实例对象     constructor：某个构造函数
+    // 用来检测  constructor.prototype 是否存在于参数  object 的原型链上。
+
+    function my_instanceof(obj, con) {
+        let left = obj.__proto__, right = con.prototype
+        while (true) {
+            if (left === null) return false
+            if (left === right) return true
+            left = left.__proto__
+
+        }
+    }
+    function add() {
+        return 0
+    }
+    console.log(my_instanceof(add, Function))
+</script>
+
+</html>

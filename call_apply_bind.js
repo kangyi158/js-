@@ -49,3 +49,4 @@ var person = { name: 'kang' }
 // obj.show.mycall(person, 1, 2, 3)
 obj.show.myapply(person, [1, 2, 3, 4])
 // obj.show.mybind(person, 1, 2, 3)(4, 5, 6)
+
