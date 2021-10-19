@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // -------------------------------浅拷贝
+
+    // （1）for···in只循环第一层
+    // 只复制第一层的浅拷贝
+    // function simpleCopy(obj1) {
+    //    var obj2 = Array.isArray(obj1) ? [] : {};
+    //    for (let i in obj1) {
+    //    obj2[i] = obj1[i];
+    //   }
+    //    return obj2;
+    // }
+    // var obj1 = {
+    //    a: 1,
+    //    b: 2,
+    //    c: {
+    //          d: 3
+    //       }
+    // }
+    // var obj2 = simpleCopy(obj1);
+    // obj2.a = 3;
+    // obj2.c.d = 4;
+    // alert(obj1.a); // 1
+    // alert(obj2.a); // 3
+    // alert(obj1.c.d); // 4
+    // alert(obj2.c.d); // 4
+
+
+    // // （2）Object.assign方法 
+    // // Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。
+
+    // var obj = {
+    //     a: 1,
+    //     b: 2
+    // }
+    // var obj1 = Object.assign(obj);
+    // obj1.a = 3;
+    // console.log(obj.a) // 3
+
+
+    // // （3）直接用=赋值
+    // let a=[0,1,2,3,4],
+    //     b=a;
+    // console.log(a===b);
+    // a[0]=1;
+    // console.log(a,b);
+
+
+    // --------------------------深拷贝
+
+    // 深拷贝方法一：对属性中所有引用类型的值，遍历到是基本类型的值为止。
+    function deepClone(obj) {
+        if (!obj || typeof obj !== 'object')
+            throw ('error arguments!')
+        var resObj = (typeof obj === 'array') ? [] : {}
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (obj[key] && typeof obj[key] === 'object') {
+                    resObj[key] = deepClone(obj[key])
+                } else {
+                    resObj[key] = obj[key]
+                }
+            }
+        }
+        return resObj
+    }
+
+
+    //深拷贝方法二： 通过js的内置对象JSON来进行数组对象的深拷贝
+    // function deepClone(obj) {
+    //     var _obj = JSON.stringify(obj),
+    //         objClone = JSON.parse(_obj);
+    //     return objClone;
+    // }
+
+
+    // 测试
+    var obj = {
+        a: [1, 2, 3],
+        b: 1233444,
+        c: {
+            ccc: 111,
+            cbb: [2, 3, 4],
+            ddd: {
+                jj: 'hjkl'
+            }
+        }
+
+    }
+    var cloneRes = deepClone(obj)
+    obj = {}
+    console.log(cloneRes);
+
+
+
+
+</script>
+
+</html>
