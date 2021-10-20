@@ -62,15 +62,18 @@
     // --------------------------深拷贝
 
     // 深拷贝方法一：对属性中所有引用类型的值，遍历到是基本类型的值为止。
+    // typeof是无法判断array的,它会返回object，这里使用Object.prototype.toString方法
     function deepClone(obj) {
-        if (!obj || typeof obj !== 'object')
-            throw ('error arguments!')
-        var resObj = (typeof obj === 'array') ? [] : {}
+        var resObj = obj instanceof Array ? [] : {}
         for (var key in obj) {
             if (obj.hasOwnProperty(key)) {
-                if (obj[key] && typeof obj[key] === 'object') {
+                if (obj instanceof Object) {
                     resObj[key] = deepClone(obj[key])
-                } else {
+                } else if (obj instanceof Array) {
+                    resObj[key] = []
+                    resObj[key] = deepClone(obj[key])
+                }
+                else {
                     resObj[key] = obj[key]
                 }
             }
@@ -85,7 +88,6 @@
     //         objClone = JSON.parse(_obj);
     //     return objClone;
     // }
-
 
     // 测试
     var obj = {
@@ -103,6 +105,7 @@
     var cloneRes = deepClone(obj)
     obj = {}
     console.log(cloneRes);
+    console.log(Object.prototype.toString(cloneRes));
 
 
 
