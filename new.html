@@ -12,6 +12,13 @@
 
 </body>
 <script>
+    // new的过程：(感觉像是给，一个对象obj里添加属性和原型)
+    // 1，创建一个空对象
+    // 2,将这个对象继承构造函数的原型，obj.__proto__=func.prototype
+    // 3,调用构造函数，用call改变他的this为obj,res=func.call(obj,...args)
+    // 4,判断res是对象，返回res, 否则返回obj
+
+
     function Person(name) {
         this.name = name
     }
@@ -19,12 +26,22 @@
         age: 18
     }
 
+    // function my_new(func, ...args) {
+    //     var obj = {}
+    //     obj.__proto__ = func.prototype
+    //     var res = func.call(obj, ...args)
+    //     return res instanceof Object ? res : obj
+    // }
+
+
+
     function my_new(func, ...args) {
         var obj = {}
         obj.__proto__ = func.prototype
-        var res = func.call(obj, args)
+        var res = func.apply(obj, args)
         return res instanceof Object ? res : obj
     }
+
 
     var me = my_new(Person, 'kangyi')
     console.log(me.name);   //kangyi
