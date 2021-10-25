@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            height: 500%;
+        }
+    </style>
+</head>
+
+<body>
+    <button>按钮</button>
+</body>
+<script>
+
+    // 节流和防抖：一个频繁触发的函数，出于性能考虑
+
+    // 函数节流：在规定时间内，只让函数触发的第一次生效，后面的不生效
+    // 函数节流指的是某个函数在一定时间间隔内只执行一次，在这个时间内内 无视后来产生的函数调用也不会延长时间间隔。
+    // 例如：游戏的攻击按钮
+    function throttle(func, wait) {
+        var pre = new Date();
+        return function () {
+            var ctx = this
+            var args = arguments
+            var cur = new Date()
+            if (cur - pre > wait) {
+                func.apply(ctx, args)
+                pre = cur
+            }
+        }
+    }
+    document.onscroll = throttle(function () { console.log('scroll事件'); }, 1000)
+
+
+    // 函数防抖：在规定时间内，只让函数触发的最后一次生效，前面的不生效
+    // 例如：在登录、发短信等按钮避免用户点击太快，以致于发送了多次请求，需要防抖
+    function debounce(func, wait) {
+        var timer = null
+        return function () {
+            var ctx = this
+            var args = arguments
+            if (timer) clearTimeout(timer)
+            timer = setTimeout(function () {
+                func.apply(ctx, args)
+            }, wait)
+        }
+    }
+
+    document.getElementsByTagName('button')[0].onclick = debounce(function () { console.log('btn'); }, 1000)
+
+
+
+
+</script>
+
+</html>
