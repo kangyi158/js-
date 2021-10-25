@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // Promise是一个构造函数，可以封装异步的任务，并且对结果进行处理
+    // promise支持链式调用，可以用来解决回调地狱的问题，在指定回调和错误处理方面更加灵活
+    async function async1() {
+        console.log('async1 start')
+        await async2()
+        console.log('async1 end')
+    }
+
+    async function async2() {
+        console.log('async2')
+    }
+
+    console.log('script start')
+    setTimeout(function () {
+        console.log('setTimeout')
+    }, 0)
+
+    async1();
+
+    new Promise(function (resolve) {
+        console.log('promise1')
+        resolve();
+    }).then(function () {
+        console.log('promise2')
+    })
+
+    console.log('script end')
+
+
+
+</script>
+
+</html>
