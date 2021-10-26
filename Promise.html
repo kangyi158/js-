@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <button id="btn">点击发送请求</button>
+
 </body>
 <script>
     // Promise是一个构造函数，可以封装异步的任务，并且对结果进行处理
@@ -109,7 +109,7 @@
     // Promise.race方法：Promse.race就是赛跑的意思，意思就是说，Promise.race([p1, p2, p3])
     // 里面哪个结果获得的快，就返回那个结果
     my_Promise.race = function (promises) {
-        return new Promise((resolve, reject) => {
+        return new my_Promise((resolve, reject) => {
             for (var i = 0; i < promises.length; i++) {
                 promises[i].then(value => {
                     resolve(value)
@@ -120,23 +120,23 @@
         })
     }
 
-    // let p1 = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //         resolve('success')
-    //     }, 1000)
-    // })
+    let p1 = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('success')
+        }, 1000)
+    })
 
-    // let p2 = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //         reject('failed')
-    //     }, 5000)
-    // })
-    // // 测试
-    // my_Promise.race([p1, p2]).then((result) => {
-    //     console.log(result)
-    // }).catch((error) => {
-    //     console.log(error)  // 打开的是 'failed'
-    // })
+    let p2 = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject('failed')
+        }, 5000)
+    })
+    // 测试
+    my_Promise.race([p1, p2]).then((result) => {
+        console.log(result)
+    }, reason => {
+        console.log(reason);
+    })
 
 
 </script>

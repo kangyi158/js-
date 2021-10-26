@@ -12,53 +12,116 @@
 
 </body>
 <script>
-    const PENDING = Symbol();
-    const REJECTED = Symbol();
-    const FULLFILLED = Symbol();
-
-    const MyPromise = function (fn) {
-        this.state = PENDING;
-        this.value = '';
-
+    function my_Promise(executor) {
+        this.promiseStatus = 'pending'
+        this.proResult = null
         this.callbacks = []
-
-        const resolve = (value) => {
-            this.state = FULLFILLED;
-            this.value = value;
+        var self = this
+        function resolve(value) {
+            if (self.promiseStatus !== 'pending') return
+            self.promiseStatus = 'resolved'
+            self.proResult = value
+            self.callbacks.forEach(item => {
+                item.resolve(value)
+            })
         }
-
-        const reject = (error) => {
-            this.state = REJECTED;
-            this.value = error;
+        function reject(reason) {
+            if (self.promiseStatus !== 'pending') return
+            self.promiseStatus = 'rejected'
+            self.proResult = reason
+            self.callbacks.forEach(item => {
+                item.reject(value)
+            })
         }
-
-        this.then = (onFullFill, onReject) => {
-            if (this.state == FULLFILLED) {
-                onFullFill(this.value);
-            } else {
-                onReject(this.value);
-            }
-        }
-
         try {
-            fn(resolve, reject);
-        } catch (error) {
-            reject(error);
+            executor(resolve, reject)
+        } catch (err) {
+            reject('nonono')
         }
     }
 
-    // test
-    let p = new MyPromise((resolve, reject) => {
-        setTimeout(() => {
-            resolve('hello');
-        }, 1000);
+    my_Promise.prototype.then = function (resolve, reject) {
+        if (this.promiseStatus === 'resolved') resolve(this.promiseResult)
+        if (this.promiseStatus === 'rejected') reject(this.promiseResult)
+        if (this.promiseStatus === 'pending') {
+            this.callbacks.push({
+                resolve, reject
+            })
+        }
+    }
 
+    my_Promise.all = function (promises) {
+        return new my_Promise((resolve, reject) => {
+            var arr = []
+            for (var i = 0; i < promises.length; i++) {
+                promises[i].then(value => {
+                    arr[i] = value
+                    if (arr.length === promises.length) {
+                        resolve(arr)
+                    }
+                }, reason => {
+                    reject(reason)
+                })
+            }
+        })
+    }
+
+    my_Promise.race = function (promises) {
+        return new my_Promise((resolve, reject) => {
+            for (var i = 0; i < promises.length; i++) {
+                promises.then(value => {
+                    resolve(value)
+                }, reason => {
+                    reject(reason)
+                })
+            }
+        })
+    }
+
+    let p1 = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('success')
+        }, 1000)
     })
-    p.then(res => {
-        console.log(res);  // hello
-    }, err => {
-        console.log(err);
+
+    let p2 = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject('failed')
+        }, 5000)
     })
+    // 测试
+    my_Promise.race([p1, p2]).then((result) => {
+        console.log(result)
+    }, reason => {
+        console.log(reason);
+    })
+
+
+
+
+    // var p1 = new my_Promise((resolve, reject) => {
+    //     resolve('okk')
+    // })
+    // var p2 = new my_Promise((resolve, reject) => {
+    //     resolve('hello')
+    // })
+    // var p3 = new my_Promise((resolve, reject) => {
+    //     resolve('kang')
+    // })
+    // var pros = [p1, p2, p3]
+
+    // console.log(my_Promise.all(pros));
+
+
+    // var p = new my_Promise((resolve, reject) => {
+    //     reject('nonono')
+    // })
+    // p.then(value => {
+    //     console.log(value);
+    // }, err => {
+    //     console.log(err);
+    // })
+    // console.log(p);
 </script>
 
 </html>
