@@ -14,32 +14,129 @@
 <script>
     // Promise是一个构造函数，可以封装异步的任务，并且对结果进行处理
     // promise支持链式调用，可以用来解决回调地狱的问题，在指定回调和错误处理方面更加灵活
-    async function async1() {
-        console.log('async1 start')
-        await async2()
-        console.log('async1 end')
+    function my_Promise(executor) {
+        this.promiseStatus = 'pending'
+        this.promiseResult = null
+        // 如果给一个promise对象指定多个回调函数，当状态改变时，这些回调都会生效
+        this.callbacks = []
+        // 因为执行resolve/reject的时候函数的this指向window而不是实例对象，所以需要保存这里的this
+        const self = this
+        function resolve(data) {
+            if (self.promiseStatus !== 'pending') return
+            self.promiseStatus = 'resolved'
+            self.promiseResult = data
+            self.callbacks.forEach(item => {
+                item.onResolved(data)
+            });
+
+        }
+        function reject(data) {
+            if (self.promiseStatus !== 'pending') return
+            self.promiseStatus = 'rejected'
+            self.promiseResult = data
+            self.callbacks.forEach(item => {
+                item.onReject(data)
+            });
+
+        }
+        try {
+            executor(resolve, reject)
+        } catch (error) {
+            reject(error)
+        }
+
     }
 
-    async function async2() {
-        console.log('async2')
+    my_Promise.prototype.then = function (onResolved, onReject) {
+        if (this.promiseStatus === 'resolved') onResolved(this.promiseResult)
+        if (this.promiseStatus === 'rejected') onReject(this.promiseResult)
+        if (this.promiseStatus === 'pending')
+            this.callbacks.push({ onResolved, onReject })
     }
 
-    console.log('script start')
-    setTimeout(function () {
-        console.log('setTimeout')
-    }, 0)
+    // 测试
+    // var p = new my_Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         resolve('okkkkkk')
+    //     }, 2000);
+    // })
 
-    async1();
+    // p.then(value => {
+    //     console.log(value);
+    // }, reason => {
+    //     console.warn(reason);
+    // })
+    // p.then(value => {
+    //     alert(value);
+    // }, reason => {
+    //     console.warn(reason);
+    // })
 
-    new Promise(function (resolve) {
-        console.log('promise1')
-        resolve();
-    }).then(function () {
-        console.log('promise2')
-    })
 
-    console.log('script end')
 
+    // Promise.all方法：可以将多个Promise实例包装成一个新的Promise实例。
+    // 同时，成功和失败的返回值是不同的，成功的时候返回的是一个结果数组，而失败的时候则返回最先被reject失败状态的值。
+    my_Promise.all = function (promises) {
+        return new my_Promise((resolve, reject) => {
+            var arr = []
+            promises.forEach((item, index) => {
+                item.then(value => {
+                    arr[index] = value
+                    if (arr.length === promises.length) {
+                        resolve(arr)
+                    }
+                }, reason => {
+                    reject(reason)
+                })
+            })
+        })
+    }
+    // // 测试
+    // var p1 = new my_Promise((resolve, reject) => {
+    //     resolve('okk')
+    // })
+    // var p2 = new my_Promise((resolve, reject) => {
+    //     resolve('hello')
+    // })
+    // var p3 = new my_Promise((resolve, reject) => {
+    //     reject('kang')
+    // })
+    // var pros = [p1, p2, p3]
+
+    // console.log(my_Promise.all(pros));
+
+
+    // Promise.race方法：Promse.race就是赛跑的意思，意思就是说，Promise.race([p1, p2, p3])
+    // 里面哪个结果获得的快，就返回那个结果
+    my_Promise.race = function (promises) {
+        return new Promise((resolve, reject) => {
+            for (var i = 0; i < promises.length; i++) {
+                promises[i].then(value => {
+                    resolve(value)
+                }, reason => {
+                    reject(reason)
+                })
+            }
+        })
+    }
+
+    // let p1 = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         resolve('success')
+    //     }, 1000)
+    // })
+
+    // let p2 = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         reject('failed')
+    //     }, 5000)
+    // })
+    // // 测试
+    // my_Promise.race([p1, p2]).then((result) => {
+    //     console.log(result)
+    // }).catch((error) => {
+    //     console.log(error)  // 打开的是 'failed'
+    // })
 
 
 </script>
