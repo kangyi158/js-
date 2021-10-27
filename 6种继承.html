@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+<script>
+
+    // 1,原型链继承
+    // 缺点：1，创建新实例时无法向父类的构造函数传参 2，所有新实例都会共享父类实例的引用属性
+    // function Person(name) {
+    //     this.name = name
+    //     this.arr = []
+    // }
+    // Person.prototype.age = 10
+
+    // function Per(sex) {
+    //     this.sex = sex
+    // }
+    // Per.prototype = new Person()
+    // var p1 = new Per('woman')
+    // var p2 = new Per('man')
+    // console.log(p1.age);  //10
+    // console.log(p1.name);  //undefined
+    // console.log(p1 instanceof Person);   //true
+    // p1.arr.push(1)
+    // console.log(p1.arr);// [1]
+    // console.log(p2.arr);//[1]
+
+
+    // 2,借用构造函数构造  优点：解决了原型链继承的不能传参和新实例会共享父类实例的缺点
+    //                缺点：1，新实例只能继承父类构造函数的属性不能继承父类原型上的属性 
+    // function Person(name) {
+    //     this.name = name
+    // }
+    // Person.prototype.age = 18
+    // function Student(sex，name) {
+    //     Person.call(this, name)
+    //     this.sex = sex
+    // }
+    // var stu = new Student('woman','kang')
+    // console.log(stu.name);    //kang
+    // console.log(stu.sex);     //woman
+    // console.log(stu.age);     //undefined
+    // console.log(stu instanceof Person);  //false
+
+
+    // 3,组合式继承 （上面两个的合并） 
+    // 优点：1，可以继承父类实例上的属性，也可以继承父类原型链上的属性 2，可以给父类构造函数传参
+    // 缺点：调用了两次父类的构造函数，耗内存
+    // function Person(name) {
+    //     this.name = name
+    // }
+    // Person.prototype.age = 18
+    // function Student(sex,name) {
+    //     Person.call(this, name)
+    //     this.sex = sex
+    // }
+    // Student.prototype = new Person()
+    // var stu = new Student('woman')
+    // console.log(stu.age);    //18
+    // console.log(stu.name);   //kang
+    // console.log(stu.sex);    //woman
+
+
+    // 4，原型式继承 
+    // function Person(name) {
+    //     this.name = name
+    // }
+    // Person.prototype.age = 18
+    // function content(sup) {
+    //     function F() { }
+    //     F.prototype = sup
+    //     return new F()
+    // }
+    // var person = new Person('kang')  //拿到父类实例上的属性
+    // var stu = content(person)
+
+    // console.log(stu.age);  //18
+    // console.log(stu.name); //kang
+
+
+
+    // 4,原型式继承（类似于复制了一个对象，用函数来包装） 
+    //  缺点：新实例的属性都是后面添加的，不能实现复用
+    // function Person(name) {
+    //     this.name = name
+    // }
+    // Person.prototype.age = 18
+    // function content(obj) {   //在这个函数里面相当于进行了浅复制
+    //     function F() { }
+    //     F.prototype = obj
+    //     return new F()
+    // }
+    // var p1 = new Person()
+    // var p2 = content(p1)
+    // console.log(p2.age);   //18
+
+
+    // 5,寄生式继承(给原型式继承套个壳子传递参数)
+    // function Person(name) {
+    //     this.name = name
+    // }
+    // Person.prototype.age = 18
+    // function content(obj) {
+    //     function F() { }
+    //     F.prototype = obj
+    //     return new F()
+    // }
+    // function subObject(obj) {
+    //     var sub = content(obj)
+    //     sub.sex = 'woman'
+    //     return sub
+    // }
+    // var p1 = new Person('li')
+    // var p2 = subObject(p1)
+    // console.log(p2.age);  //18
+    // console.log(p2.name);  //li
+    // console.log(p2.sex);  //woman
+
+
+    // 6,寄生组合式继承
+    function Person(name) {
+        this.name = name
+    }
+    Person.prototype.age = 18
+    function content(obj) {
+        function F() { }
+        F.prototype = obj
+        return new F()
+    }
+    var con = content(Person.prototype)
+
+    function Student() {
+        Person.call(this)
+    }
+    Student.prototype = con
+    con.constractor = Student
+    var stu = new Student()
+    console.log(stu.age);    //18
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</html>
