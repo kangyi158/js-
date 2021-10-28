@@ -6,83 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
 </head>
+
+<script>
+    for (var i = 0; i < 5; i++) {
+        (function fn(i) {
+            setTimeout(() => {
+                console.log(i);
+            }, 1000);
+        })(i);
+    }
+</script>
+
 
 <body>
 
 </body>
-<script>
-    // 1,原型链继承
-    // function Person(name) {
-    //     this.name = name
-    // }
-    // Person.prototype.age = 18
-    // function Student(num) {
-    //     this.num = num
-    // }
-    // Student.prototype = new Person()
-    // var stu = new Student()
-    // console.log(stu.age);  //18
-
-    // function Person(name) {
-    //     this.name = name || 'okk'
-    // }
-    // Person.prototype.age = 18
-    // function content(obj) {
-    //     function F() { }
-    //     F.prototype = obj
-    //     return new F()
-    // }
-    // var per = new Person()
-    // var student = content(per)
-    // console.log(student.name);  //okk
-
-
-
-
-
-    // function Student(num, name) {
-    //     this.num = num
-    //     Person.call(this, name)
-    // }
-    // Student.prototype = new Person()
-    // var stu = new Student(222, 'kang')
-    // console.log(stu.age);   //18
-    // console.log(stu.name);  //kang
-    // console.log(stu.num);   //222
-
-
-    // function Student(num, name) {
-    //     this.num = num
-    //     Person.call(this, name)
-    // }
-    // var stu = new Student(111, 'kang')
-    // console.log(stu.name);   //kang
-    // console.log(stu.age);    //undefined
-
-    function Person(name) {
-        this.name = name || 'okk'
-    }
-    Person.prototype.age = 18
-
-    function content(obj) {
-        function F() { }
-        F.prototype = obj
-        return new F()
-    }
-    var con = content(Person.prototype)
-    function Student(name) {
-        Person.call(this, name)
-    }
-    Student.prototype = con
-    con.constructor = Student
-    var stu = new Student('kang')
-    console.log(stu.name);   //kang
-    console.log(stu.age);    //18
-
-
-
-
-</script>
 
 </html>
